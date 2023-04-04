@@ -1,11 +1,14 @@
 package com.ubb.postuniv.userinterface;
 
+import com.ubb.postuniv.domain.Entity;
+import com.ubb.postuniv.domain.FilmProfitabilityDTO;
 import com.ubb.postuniv.service.ClientCardService;
 import com.ubb.postuniv.service.FilmService;
 import com.ubb.postuniv.service.ReservationService;
+import com.ubb.postuniv.service.TextSearch;
 
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.List;
 import java.util.Scanner;
 
 public class Console {
@@ -14,17 +17,22 @@ public class Console {
     private ReservationService reservationService;
     private Scanner scan;
 
-    public Console(FilmService filmService, ClientCardService clientCardService, ReservationService reservationService) {
+    private TextSearch searchText;
+
+    public Console(FilmService filmService, ClientCardService clientCardService, ReservationService reservationService, TextSearch searchText) {
         this.filmService = filmService;
         this.clientCardService = clientCardService;
         this.reservationService = reservationService;
         this.scan = new Scanner(System.in);
+        this.searchText = searchText;
     }
 
     private void showMenu() {
         System.out.println("1. CRUD Film");
         System.out.println("2. CRUD Client Card");
         System.out.println("3. CRUD Reservations");
+        System.out.println("4. Search Text");
+        System.out.println("5. See FilmProfitability");
         System.out.println("0. Exit");
     }
 
@@ -45,10 +53,15 @@ public class Console {
                 case 1 -> runSubmenuCRUDFilm();
                 case 2 -> runSubmenuCRUDClientCard();
                 case 3 -> runSubmenuCRUDReservation();
+                case 4 -> handleSearchText();
+                case 5 -> handleFilmProfitability();
                 default -> System.out.println("Invalid option.");
             }
         }
     }
+
+
+
 
     private void runSubmenuCRUDFilm() {
         while (true) {
@@ -85,7 +98,7 @@ public class Console {
             double price = this.scan.nextDouble();
 
             System.out.println("In Program: ");
-            String inProgram = this.scan.next();
+            boolean inProgram = this.scan.nextBoolean();
 
             this.filmService.add(id, title, releaseYear, price, inProgram);
         } catch (Exception e) {
@@ -108,7 +121,7 @@ public class Console {
             double price = this.scan.nextDouble();
 
             System.out.println("In Program: ");
-            String inProgram = this.scan.next();
+            boolean inProgram = this.scan.nextBoolean();
 
             this.filmService.refresh(id, title, releaseYear, price, inProgram);
 
@@ -293,6 +306,24 @@ public class Console {
         }
     }
 
+    private void handleSearchText() {
+        System.out.println("Gimme text to be searched:");
+        String subString = scan.next();
+        List<Entity> result = searchText.searchInText(subString);
+        if (result.size()==0){
+            System.out.println("Text NOT FOUND\n");
+        }else{
+            System.out.println("Text FOUND in entity(es): ");
+            for (Entity e : result){
+                System.out.println(e.toString());
+            }
+        }
+    }
 
+    private void handleFilmProfitability() {
+        for (FilmProfitabilityDTO f : this.reservationService.getFilmProfitability()){
+            System.out.println(f);
+        }
+    }
 
 }

@@ -4,9 +4,9 @@ public class Film extends Entity{
     private String title;
     private int releaseYear;
     private double price;
-    private String inProgram;
+    private boolean inProgram;
 
-    public Film(int id, String title, int releaseYear, double price, String inProgram) {
+    public Film(int id, String title, int releaseYear, double price, boolean inProgram) {
         super(id);
         this.title = title;
         this.releaseYear = releaseYear;
@@ -38,11 +38,11 @@ public class Film extends Entity{
         this.price = price;
     }
 
-    public String getInProgram() {
+    public boolean getInProgram() {
         return inProgram;
     }
 
-    public void setInProgram(String inProgram) {
+    public void setInProgram(boolean inProgram) {
         this.inProgram = inProgram;
     }
 
